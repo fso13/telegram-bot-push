@@ -9,6 +9,7 @@ import ru.drudenko.telegrambotpush.impl.Bot;
 import ru.drudenko.telegrambotpush.model.NotificationRepository;
 import ru.drudenko.telegrambotpush.model.Status;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @EnableScheduling
@@ -26,7 +27,7 @@ public class TaskService {
     @Scheduled(initialDelay = 1_000, fixedDelay = 5_000)
     public void process() {
         notificationRepository.findAllByStatus(Status.NEW).stream()
-                .filter(task -> task.getNext().isBefore(LocalDateTime.now()))
+                .filter(task -> task.getNext().isBefore(Instant.now()))
                 .forEach(task -> {
                     try {
                         bot.execute(SendMessage.builder().chatId(String.valueOf(task.getChatId()))
