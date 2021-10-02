@@ -30,7 +30,7 @@ public class Notification {
     private String period;
     @Column
     private boolean cron;
-    @Column
+    @Column(name = "offset_seconds")
     private int offset;
     @Column
     private Instant next;
