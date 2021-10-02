@@ -7,6 +7,8 @@ import ru.drudenko.telegrambotpush.api.Command;
 import ru.drudenko.telegrambotpush.api.NotificationService;
 import ru.drudenko.telegrambotpush.model.Notification;
 
+import java.util.Date;
+
 @Service
 public class CreateAddPeriodCommand implements Command {
     public static final String COMMAND = "create_notification_add_period";
@@ -22,7 +24,7 @@ public class CreateAddPeriodCommand implements Command {
 
         Notification temp = notificationService.getTempMessage(message.getMessage().getChatId());
         temp.setPeriod(message.getMessage().getText());
-
+        temp.setOffset(new Date(message.getMessage().getDate()).getTimezoneOffset());
         notificationService.add(message.getMessage().getChatId(), temp);
         notificationService.removeTemp(message.getMessage().getChatId());
 

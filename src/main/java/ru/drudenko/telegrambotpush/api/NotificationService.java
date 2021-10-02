@@ -10,6 +10,8 @@ import ru.drudenko.telegrambotpush.model.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,8 @@ public class NotificationService {
         notification.setPeriod(msg.getPeriod());
         notification.setTime(msg.getTime());
         notification.setCron(parse.getSecond());
-        notification.setNext(parse.getFirst());
+        notification.setOffset(msg.getOffset());
+        notification.setNext(parse.getFirst().toInstant(ZoneOffset.ofTotalSeconds(msg.getOffset())));
         notification.setStatus(Status.NEW);
         notification.setTitle(msg.getTitle());
         notificationRepository.save(notification);
@@ -61,9 +64,9 @@ public class NotificationService {
     public void process() {
         notificationRepository.findAllByStatusAndCronIsTrue(Status.SENT)
                 .forEach(task -> {
-                    Pair<LocalDateTime, Boolean> parse = parsePeriodService.parse(task.getNext().toLocalDate(), task.getTime(), task.getPeriod());
+                    Pair<LocalDateTime, Boolean> parse = parsePeriodService.parse(task.getNext().atZone(ZoneId.ofOffset("UTC", ZoneOffset.ofTotalSeconds(task.getOffset()))).toLocalDate(), task.getTime(), task.getPeriod());
                     task.setStatus(Status.NEW);
-                    task.setNext(parse.getFirst());
+                    task.setNext(parse.getFirst().toInstant(ZoneOffset.ofTotalSeconds(task.getOffset())));
                     notificationRepository.save(task);
                 });
     }

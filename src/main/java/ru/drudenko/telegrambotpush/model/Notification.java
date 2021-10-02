@@ -10,10 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Entity
 @Table(name = "tb_notification")
@@ -34,12 +31,22 @@ public class Notification {
     @Column
     private boolean cron;
     @Column
-    private LocalDateTime next;
+    private int offset;
+    @Column
+    private Instant next;
     @Column(name = "create_date")
     private Instant createDate = Instant.now();
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 
     public Status getStatus() {
         return status;
@@ -89,11 +96,11 @@ public class Notification {
         this.period = period;
     }
 
-    public LocalDateTime getNext() {
+    public Instant getNext() {
         return next;
     }
 
-    public void setNext(LocalDateTime next) {
+    public void setNext(Instant next) {
         this.next = next;
     }
 
@@ -115,6 +122,6 @@ public class Notification {
 
     @Override
     public String toString() {
-        return title + ", " + next.format(DateTimeFormatter.ofPattern("«dd» MMMM yyyy в HH:mm").withLocale(new Locale("ru", "RU")));
+        return title + ", в " + time + " " + period;
     }
 }
