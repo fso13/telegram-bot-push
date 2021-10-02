@@ -74,7 +74,7 @@
                     <assembleDirectory>target</assembleDirectory>
                     <programs>
                         <program>
-                            <mainClass>ru.miroha.Application</mainClass>
+                            <mainClass>ru.drudenko.telegrambotpush.TelegramBotPushApplication</mainClass>
                             <name>workerBot</name>
                         </program>
                     </programs>
